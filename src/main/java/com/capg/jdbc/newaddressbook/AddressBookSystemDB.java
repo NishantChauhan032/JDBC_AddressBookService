@@ -1,11 +1,16 @@
 package com.capg.jdbc.newaddressbook;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddressBookSystemDB {
 	public static Connection connection = null;
@@ -28,11 +33,49 @@ public class AddressBookSystemDB {
 				String address_id = result.getString(6);
 				Contacts contacts = new Contacts(person_id, firstName, lastName, phoneNumber, emailID, address_id);
 				contactsList.add(contacts);
-				System.out.println(contacts);
 			}
 		} catch (SQLException e) {
 			throw new CustomExceptions("SQL Exception..Failed to perform task!!");
 		}
 		return contactsList;
 	}
+
+	public static void updateContactDetails(String phoneNumber, String emailID, String firstName)
+			throws CustomExceptions {
+
+		String updateQuery = "update personal_details SET phoneNumber = ? , emailID = ? where firstName = ?";
+		try (Connection connection = EstablishConnection.getConnection()) {
+			PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+			preparedStatement.setString(1, phoneNumber);
+			preparedStatement.setString(2, emailID);
+			preparedStatement.setString(3, firstName);
+			int rowsAffected = preparedStatement.executeUpdate();
+
+			if (rowsAffected == 1) {
+				System.out.println("Contact details updated!");
+			} else {
+				throw new CustomExceptions("SQL Exception..Failed to update record!!");
+			}
+		} catch (SQLException e) {
+			throw new CustomExceptions("Error in establishing connection!!");
+		}
+
+	}
+
+	String validateUpdationOfPhoneNo(String firstName) throws CustomExceptions {
+		String phoneNumber = null;
+		String validateQuery = "select phoneNumber from Personal_Details where firstName = ?";
+		try (Connection connection = EstablishConnection.getConnection()) {
+			PreparedStatement preparedStatement = connection.prepareStatement(validateQuery);
+			preparedStatement.setString(1, firstName);
+			ResultSet result = preparedStatement.executeQuery();
+			while (result.next()) {
+				phoneNumber = result.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return phoneNumber;
+	}
+
 }
