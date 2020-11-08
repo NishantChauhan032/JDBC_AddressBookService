@@ -121,4 +121,33 @@ public class AddressBookSystemDB {
 		}
 		return contactsGroupByCityOrState;
 	}
+	
+	public void addNewContactToAddressBookDB(String firstName, String lastName, String address, String city,
+			String state, String zip, String phoneNumber, String emailID, String address_id) throws CustomExceptions {
+
+		int rowsAffected = 0;
+		LocalDate entry_date = LocalDate.now();
+		String addToAddressQuery = String.format("insert into address values('%s','%s','%s','%s','%s');", address_id,
+				address, city, state, zip);
+		String addToPersonalDetailsQuery = String.format(
+				"insert into personal_details(entry_date,firstName,lastName,phoneNumber,emailID,address_id) values ('%s','%s','%s','%s','%s','%s');",
+				entry_date.toString(), firstName, lastName, phoneNumber, emailID, address_id);
+		try (Connection connection = EstablishConnection.getConnection()) {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+
+			rowsAffected = statement.executeUpdate(addToAddressQuery);
+			if (rowsAffected != 1) {
+				throw new CustomExceptions("Failed to insert data into address table");
+			}
+			rowsAffected = statement.executeUpdate(addToPersonalDetailsQuery);
+			if (rowsAffected != 1) {
+				throw new CustomExceptions("Failed to insert data into personal_details table");
+			}
+			connection.commit();
+		} catch (SQLException e) {
+			throw new CustomExceptions("Failed to insert data into address table");
+		}
+	}
+
 }

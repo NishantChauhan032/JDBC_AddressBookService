@@ -42,18 +42,26 @@ public class AddressBookSystemTest {
 		contactsList = addressBookSystem.getContactListInADateRange(LocalDate.of(2019, 05, 01),LocalDate.now());
 		Assert.assertEquals(4, contactsList.size());
 	}
-	
+   	@Ignore
 	@Test
 	public void givenACity_whenRetrievedContacts_shouldGiveCountOfContacts() throws CustomExceptions {
 		contactsCount = addressBookSystem.getContactsByCityOrStateName("City");
 		int count = contactsCount.get("Adityapur");
 		Assert.assertEquals(2, count);
 	}
-
+	@Ignore
 	@Test
 	public void givenAState_whenRetrievedContacts_shouldGiveCountOfContacts() throws CustomExceptions {
 		contactsCount = addressBookSystem.getContactsByCityOrStateName("State");
 		int count = contactsCount.get("Bihar");
 		Assert.assertEquals(4, count);
 	}
+
+	@Test
+	public void addedNewContact_whenContactsCounted_shouldGiveCurrentCountOfContacts() throws CustomExceptions {
+		addressBookSystem.addNewContactToAddressBookDB("Amit","Shakya","Kannauj","Kanpur","UP","885634","9000087654","shakya@gmail.com","AD06");
+		contactsList = addressBookSystem.getContactsList();
+		Assert.assertEquals(8, contactsList.size());
+	}
+	
 }
