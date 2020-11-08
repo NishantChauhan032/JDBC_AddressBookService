@@ -104,4 +104,21 @@ public class AddressBookSystemDB {
 		return contactsListInADateRange;
 	}
 
+	public Map<String, Integer> getContactsByCityOrStateName(String nameOfCityOrState) throws CustomExceptions {
+
+		Map<String, Integer> contactsGroupByCityOrState = new HashMap<>();
+		String countByStateOrCityQuery = String.format(
+				"SELECT %s,COUNT(*) FROM Personal_Details Join Address ON Personal_details.Address_ID = Address.Address_ID GROUP BY %s",
+				nameOfCityOrState, nameOfCityOrState);
+		try (Connection connection = EstablishConnection.getConnection()) {
+			PreparedStatement preparedStatement = connection.prepareStatement(countByStateOrCityQuery);
+			ResultSet result = preparedStatement.executeQuery();
+			while (result.next()) {
+				contactsGroupByCityOrState.put(result.getString(1), result.getInt(2));
+			}
+		} catch (Exception e) {
+			throw new CustomExceptions("Failed to retrieve Contacts!");
+		}
+		return contactsGroupByCityOrState;
+	}
 }

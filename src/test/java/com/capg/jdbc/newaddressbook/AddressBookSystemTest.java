@@ -36,10 +36,24 @@ public class AddressBookSystemTest {
    		String phone = addressBookSystem.validateUpdationOfPhoneNo("Nishant");
    		Assert.assertEquals("8709702154", phone);
    	}
-   	
+   	@Ignore
 	@Test
 	public void givenADateRange_whenRetrievedContacts_shouldGiveCountOfContacts() throws CustomExceptions {
 		contactsList = addressBookSystem.getContactListInADateRange(LocalDate.of(2019, 05, 01),LocalDate.now());
 		Assert.assertEquals(4, contactsList.size());
+	}
+	
+	@Test
+	public void givenACity_whenRetrievedContacts_shouldGiveCountOfContacts() throws CustomExceptions {
+		contactsCount = addressBookSystem.getContactsByCityOrStateName("City");
+		int count = contactsCount.get("Adityapur");
+		Assert.assertEquals(2, count);
+	}
+
+	@Test
+	public void givenAState_whenRetrievedContacts_shouldGiveCountOfContacts() throws CustomExceptions {
+		contactsCount = addressBookSystem.getContactsByCityOrStateName("State");
+		int count = contactsCount.get("Bihar");
+		Assert.assertEquals(4, count);
 	}
 }
