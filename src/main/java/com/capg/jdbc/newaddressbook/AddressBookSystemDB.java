@@ -77,5 +77,31 @@ public class AddressBookSystemDB {
 		}
 		return phoneNumber;
 	}
+	
+	public List<Contacts> getContactListInADateRange(LocalDate start_Date, LocalDate end_Date) throws CustomExceptions {
+		List<Contacts> contactsListInADateRange = new ArrayList<>();
+		String retrievalQuery = "select * from Personal_Details where entry_date between ? AND ? ";
+		try (Connection connection = EstablishConnection.getConnection()) {
+			PreparedStatement preparedStatement = connection.prepareStatement(retrievalQuery);
+			preparedStatement.setDate(1, Date.valueOf(start_Date));
+			preparedStatement.setDate(2, Date.valueOf(end_Date));
+			ResultSet result = preparedStatement.executeQuery();
+			while (result.next()) {
+				int person_id = result.getInt(1);
+				Date entry_date = result.getDate(2);
+				String firstName = result.getString(3);
+				String lastName = result.getString(4);
+				String phoneNumber = result.getString(5);
+				String emailID = result.getString(6);
+				String address_id = result.getString(7);
+				Contacts contacts = new Contacts(person_id, entry_date, firstName, lastName, phoneNumber, emailID,
+						address_id);
+				contactsListInADateRange.add(contacts);
+			}
+		} catch (SQLException e) {
+			throw new CustomExceptions("SQL Exception..Failed to perform task!!");
+		}
+		return contactsListInADateRange;
+	}
 
 }
