@@ -56,12 +56,27 @@ public class AddressBookSystemTest {
 		int count = contactsCount.get("Bihar");
 		Assert.assertEquals(4, count);
 	}
-
+	@Ignore
 	@Test
 	public void addedNewContact_whenContactsCounted_shouldGiveCurrentCountOfContacts() throws CustomExceptions {
 		addressBookSystem.addNewContactToAddressBookDB("Amit","Shakya","Kannauj","Kanpur","UP","885634","9000087654","shakya@gmail.com","AD06");
 		contactsList = addressBookSystem.getContactsList();
 		Assert.assertEquals(8, contactsList.size());
+	}
+	
+	@Test
+	public void addedMultipleContacts_whenContactsCounted_shouldGiveCurrentContactsCount() throws CustomExceptions {
+		Contacts[] multipleContacts= {
+				new Contacts("Suraj","Asthana","Motihari",
+						"Champaran","Bihar","878675","9507028511", "suraj@gmail.com","AD07"),
+				new Contacts("Rajeev","Kumar","Chainpur","Goraul",
+						"Bihar","836367","9567538676","rajeev@gmail.com","AD02"),
+				new Contacts("Jeet","Yadav","Abc","Dhanbad",
+						"Jharkhand", "998786","7648794749","jeet@gmail.com","AD08"),
+		};
+		addressBookSystem.addMultipleContactsToAddressBookDBUsingThreads(Arrays.asList(multipleContacts));
+		contactsList = addressBookSystem.getContactsList();
+		Assert.assertEquals(11, contactsList.size());
 	}
 	
 }

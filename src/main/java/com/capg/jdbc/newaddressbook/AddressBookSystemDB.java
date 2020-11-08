@@ -150,4 +150,30 @@ public class AddressBookSystemDB {
 		}
 	}
 
+
+	public void addMultipleContactsToAddressBookDBUsingThreads(List<Contacts> listOfContactsToBeAdded) {
+		Map<Integer, Boolean> contactAdditionStatus = new HashMap<Integer, Boolean>();
+		listOfContactsToBeAdded.forEach(contact -> {
+			Runnable task = () -> {
+				contactAdditionStatus.put(contact.hashCode(), false);
+				try {
+					addNewContactToAddressBookDB(contact.getFirstName(), contact.getLastName(), contact.getAddress(),
+							contact.getCity(), contact.getState(), contact.getZip(), contact.getPhoneNumber(),
+							contact.getEmailID(), contact.getAddress_id());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				contactAdditionStatus.put(contact.hashCode(), true);
+			};
+			Thread thread = new Thread(task, contact.getFirstName());
+			thread.start();
+		});
+		while (contactAdditionStatus.containsValue(false)) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
