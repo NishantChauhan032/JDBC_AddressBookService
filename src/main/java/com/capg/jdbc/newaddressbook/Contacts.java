@@ -89,6 +89,21 @@ public class Contacts {
 	}
 	
 	
+	public Contacts(int id, String firstName, String lastName, String address, String city, String state,
+			String zip, String phoneNumber, String emailID) {
+		this.person_id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zip = zip;
+		this.phoneNumber = phoneNumber;
+		this.emailID = emailID;
+	}
+	
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -206,6 +221,7 @@ public class Contacts {
 		this.person_id = person_id;
 	}
 
+	
 	public String getFirstName() {
 		return firstName;
 	}
